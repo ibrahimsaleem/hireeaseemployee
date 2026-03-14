@@ -1,0 +1,27 @@
+services:
+  # ── Employee Portal API (backend) ────────────────────────────────────────
+  - type: web
+    name: aplyease-employee-api
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: employee-portal
+    buildCommand: npm install
+    startCommand: npx tsx server/index.ts
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false          # Set in Render dashboard
+      - key: SESSION_SECRET
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY_2
+        sync: false
+      - key: GEMINI_PUBLIC_MODEL
+        value: gemini-2.5-flash
+      - key: NODE_TLS_REJECT_UNAUTHORIZED
+        value: "0"
+      - key: PORT
+        value: "3001"
