@@ -1,18 +1,19 @@
 services:
-  # ── Employee Portal API (backend) ────────────────────────────────────────
+  # Single service — Express serves both the React SPA and the API.
+  # Deploy from the employee-portal/ subfolder of the monorepo.
   - type: web
-    name: aplyease-employee-api
+    name: aplyease-employee-portal
     runtime: node
     region: oregon
     plan: free
     rootDir: employee-portal
-    buildCommand: npm install
-    startCommand: npx tsx server/index.ts
+    buildCommand: npm install && npm run build
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        sync: false          # Set in Render dashboard
+        sync: false          # Set in Render dashboard → Environment
       - key: SESSION_SECRET
         sync: false
       - key: GEMINI_API_KEY
@@ -23,5 +24,4 @@ services:
         value: gemini-2.5-flash
       - key: NODE_TLS_REJECT_UNAUTHORIZED
         value: "0"
-      - key: PORT
-        value: "3001"
+      # PORT is automatically set by Render — do NOT override it here

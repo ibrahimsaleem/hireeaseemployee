@@ -4,11 +4,11 @@ import { QueryClient, QueryClientProvider, type QueryFunction } from "@tanstack/
 import App from "./App";
 import "./index.css";
 
-const API_URL =
-  (import.meta as any).env?.VITE_API_URL ||
+const API_URL: string =
+  (import.meta as any).env?.VITE_API_URL ??
   (typeof window !== "undefined" && window.location.hostname === "localhost"
     ? "http://localhost:3001"
-    : "https://aplyeaseportal.onrender.com");
+    : "");
 
 const defaultQueryFn: QueryFunction = async ({ queryKey }) => {
   const path = (queryKey as string[]).join("/");

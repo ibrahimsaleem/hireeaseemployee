@@ -1,8 +1,11 @@
-const API_URL =
-  (import.meta as any).env?.VITE_API_URL ||
+// In production the Express server serves both the API and the frontend from
+// the same origin, so we use relative URLs (""). In local dev, Vite runs on a
+// different port and VITE_API_URL must point at the backend (localhost:3001).
+const API_URL: string =
+  (import.meta as any).env?.VITE_API_URL ??
   (typeof window !== "undefined" && window.location.hostname === "localhost"
     ? "http://localhost:3001"
-    : "https://aplyeaseportal.onrender.com");
+    : "");
 
 export function getToken(): string | null {
   return localStorage.getItem("ep_auth_token");
