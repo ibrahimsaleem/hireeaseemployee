@@ -309,31 +309,33 @@ export function registerRoutes(app: Express) {
 
       const today = dateApplied || new Date().toISOString().split("T")[0];
 
+      const insertValues: Record<string, unknown> = {
+        clientId,
+        employeeId: user.id,
+        dateApplied: today,
+        appliedByName: user.name,
+        jobTitle,
+        companyName,
+        mailSent: mailSent ?? false,
+        status: "Applied" as const,
+      };
+      if (location) insertValues.location = location;
+      if (portalName) insertValues.portalName = portalName;
+      if (jobLink) insertValues.jobLink = jobLink;
+      if (jobPage) insertValues.jobPage = jobPage;
+      if (resumeUrl) insertValues.resumeUrl = resumeUrl;
+      if (additionalLink) insertValues.additionalLink = additionalLink;
+      if (notes) insertValues.notes = notes;
+
       const [newApp] = await db
         .insert(jobApplications)
-        .values({
-          clientId,
-          employeeId: user.id,
-          dateApplied: today,
-          appliedByName: user.name,
-          jobTitle,
-          companyName,
-          location: location || null,
-          portalName: portalName || null,
-          jobLink: jobLink || null,
-          jobPage: jobPage || null,
-          resumeUrl: resumeUrl || null,
-          additionalLink: additionalLink || null,
-          notes: notes || null,
-          mailSent: mailSent ?? false,
-          status: "Applied",
-        })
+        .values(insertValues as any)
         .returning();
 
       // Decrement client's remaining applications
       await db
         .update(users)
-        .set({ applicationsRemaining: sql`${users.applicationsRemaining} - 1` })
+        .set({ applicationsRemaining: sql`${users.applicationsRemaining} - 1` } as any)
         .where(eq(users.id, clientId));
 
       res.status(201).json(newApp);
